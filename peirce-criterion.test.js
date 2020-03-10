@@ -46,6 +46,24 @@ describe('remove_outliers', () => {
       input: [0, 1, 2, 0, 1, 1, 0],
       expected: [0, 1, 0, 1, 1, 0],
     }]
+  }, {
+    description: 'it removes two "obvious" outliers',
+    cases: [{
+      input: [100, 100].concat(new Array(20).fill(0)),
+      expected: new Array(20).fill(0),
+    }]
+  }, {
+    description: 'it does not remove anything in the case of a split',
+    cases: [{
+      input: [
+        ...new Array(5).fill(-1),
+        ...new Array(5).fill(1),
+      ],
+      expected: [
+        ...new Array(5).fill(-1),
+        ...new Array(5).fill(1),
+      ],
+    }]
   }];
   for (const { description, cases } of groups) {
     describe(description, () => {
