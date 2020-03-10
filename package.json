@@ -1,0 +1,24 @@
+{
+  "name": "peirce-criterion",
+  "version": "0.0.1",
+  "description": "Functions for outlier removal using Peirce's criterion",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacobq/peirce-criterion.git"
+  },
+  "keywords": [
+    "peirce",
+    "statistics",
+    "outlier"
+  ],
+  "author": "Jacob Quant <jacobq@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jacobq/peirce-criterion/issues"
+  },
+  "homepage": "https://github.com/jacobq/peirce-criterion#readme"
+}
