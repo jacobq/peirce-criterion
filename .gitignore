@@ -1,1 +1,4 @@
 node_modules
+
+# Ug, npm doesn't respect my global .gitignore
+.idea/
