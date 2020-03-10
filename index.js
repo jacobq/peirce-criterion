@@ -21,7 +21,7 @@ function peirce_dev(N, k, m) {
   let r_new = 1;
   let x2; // x-squared from Gould's equation C
   while (Math.abs(r_new - r_old) > (N * 2e-16)) {
-    let ldiv = r_new ** N; // 1/(N-n)th root of Gould's equation A
+    let ldiv = Math.pow(r_new, k); // 1/(N-n)th root of Gould's equation A
     if (ldiv === 0) {
       ldiv = 1e-6;
     }
@@ -33,10 +33,9 @@ function peirce_dev(N, k, m) {
     } else {
       // Use x-squared to update R (Gould's equation D)
       r_old = r_new;
-      r_new = (
-        Math.exp((x2 - 1) / 2) *
-        erfc(Math.sqrt(x2) / Math.SQRT2)
-      );
+      const k1 = Math.exp((x2 - 1) / 2);
+      const k2 = erfc(Math.sqrt(x2) / Math.SQRT2);
+      r_new = k1 * k2;
     }
   }
   return x2;

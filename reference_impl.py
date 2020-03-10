@@ -46,10 +46,19 @@ def peirce_dev(N: int, n: int, m: int) -> float:
             else:
                 # Use x-squared to update R (Gould's equation D):
                 r_old = r_new
-                r_new = (
-                    numpy.exp((x2 - 1)/2.0)*
-                    scipy.special.erfc(numpy.sqrt(x2) / numpy.sqrt(2.0))
-                    )
+                k1 = numpy.exp((x2 - 1)/2.0)
+                k2 = scipy.special.erfc(numpy.sqrt(x2) / numpy.sqrt(2.0))
+                r_new = k1 * k2
     else:
         x2 = 0.0
     return x2
+
+# Print some test values for comparison / sanity checks
+# These appear to match those in the table at
+# https://classes.engineering.wustl.edu/2009/fall/che473/handouts/OutlierRejection.pdf
+for N in [3, 5, 10, 16]:
+  for n in [1, 2]:
+    for m in [1]:
+      result = peirce_dev(N, n, m)
+      R = numpy.sqrt(result)
+      print(f'N={N}, n={n}, m={m}, R={R}, (R^2={result})')
