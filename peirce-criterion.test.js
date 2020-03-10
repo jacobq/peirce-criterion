@@ -47,9 +47,12 @@ describe('remove_outliers', () => {
       expected: [0, 1, 0, 1, 1, 0],
     }]
   }, {
-    description: 'it removes two "obvious" outliers',
+    description: 'it removes multiple "obvious" outliers',
     cases: [{
       input: [100, 100].concat(new Array(20).fill(0)),
+      expected: new Array(20).fill(0),
+    }, {
+      input: [50, 55, 45].concat(new Array(20).fill(0)),
       expected: new Array(20).fill(0),
     }]
   }, {

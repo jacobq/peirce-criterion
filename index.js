@@ -66,16 +66,34 @@ function stats(values) {
 }
 
 /**
- * Takes a list of numbers and returns a new list with outliers removed
+ * Takes a list of numbers/samples and returns a new list with outliers removed
+ * according to Peirce's method:
+ *  1. Compute average & stdev (estimate mu & sigma)
+ *  2. Find corresponding "R" from "Peirce's table"
+ *     (call peirce_dev with N & k)
+ *  3. Compute maximum allowed deviation from the estimated mean
+ *  4. Compute deviation of each sample
+ *  5. Remove samples whose deviation exceeds the maximum allowed
+ *  6. If the number of samples removed is equal to k then we're done.
+ *     Otherwise we need to run 2-5 again with k = number of samples we removed this time
+ *
  * @param xs Input values
  * @returns result Input values excluding suspected outliers
  */
 function remove_outliers(xs) {
+  let result;
   const { n, average, stdev } = stats(xs);
-  const R = Math.sqrt(peirce_dev(n));
-  const max = R * stdev;
-  const diffs = xs.map(x => Math.abs(x - average));
-  return xs.filter((_x, i) => diffs[i] < max);
+  let numberRemoved=0;
+  let k;
+  do {
+    k = numberRemoved + 1;
+    const R = Math.sqrt(peirce_dev(n, k));
+    const max = R * stdev;
+    const diffs = xs.map(x => Math.abs(x - average));
+    result = xs.filter((_x, i) => diffs[i] < max);
+    numberRemoved = xs.length - result.length;
+  } while (numberRemoved > k);
+  return result;
 }
 
 
