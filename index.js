@@ -8,7 +8,7 @@ const erfc = require('math-erfc');
  * @param k number of outliers to be removed
  * @param m number of model unknowns
  */
-function peirce_dev(N, k, m) {
+function peirce_dev(N, k = 1, m = 1) {
   if ([N, k, m].some(arg => typeof arg !== 'number')) {
     throw Error('N, k, and m must each be numeric');
   }
@@ -41,6 +41,45 @@ function peirce_dev(N, k, m) {
   return x2;
 }
 
+/**
+ * Quick'n'dirty single variable statistics (copy/pasted & adapted from another project of mine)
+ * rather than pulling in some other dependency.
+ * @param values
+ * @returns {{n: number, sum: number, average: number, variance: number, stdev: number}}
+ */
+function stats(values) {
+  const add = (a, b) => a + b;
+
+  const n = values.length;
+  const sum = values.reduce(add);
+  const average = sum / n;
+  const variance = values.reduce((result, x) => result + Math.pow(x - average, 2), 0) / (n - 1);
+  const stdev = Math.sqrt(variance);
+
+  return {
+    n,
+    sum,
+    average,
+    variance,
+    stdev,
+  };
+}
+
+/**
+ * Takes a list of numbers and returns a new list with outliers removed
+ * @param xs Input values
+ * @returns result Input values excluding suspected outliers
+ */
+function remove_outliers(xs) {
+  const { n, average, stdev } = stats(xs);
+  const R = Math.sqrt(peirce_dev(n));
+  const max = R * stdev;
+  const diffs = xs.map(x => Math.abs(x - average));
+  return xs.filter((_x, i) => diffs[i] < max);
+}
+
+
 module.exports = {
   peirce_dev,
+  remove_outliers,
 }

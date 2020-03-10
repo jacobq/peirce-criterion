@@ -1,4 +1,4 @@
-const { peirce_dev } = require('./index.js');
+const { peirce_dev, remove_outliers } = require('./index.js');
 
 describe('peirce_dev', () => {
   test('it is a function', () => {
@@ -6,7 +6,7 @@ describe('peirce_dev', () => {
   });
 
   test('it throws if non-numeric parameter is received', () => {
-    for (const [N, k, m] of [[undefined, 1, 1], [1, undefined, 1], [1, 1, undefined]]) {
+    for (const [N, k, m] of [[null, 1, 1], [1, null, 1], [1, 1, null]]) {
       expect(() => peirce_dev(N, k, m)).toThrow('numeric');
     }
   });
@@ -34,4 +34,24 @@ describe('peirce_dev', () => {
       })
     }
   });
+});
+
+describe('remove_outliers', () => {
+  const groups = [{
+    description: 'it removes "obvious" single outlier from contrived examples',
+    cases: [{
+      input: [1, 2, 3, 100],
+      expected: [1, 2, 3],
+    }, {
+      input: [0, 1, 2, 0, 1, 1, 0],
+      expected: [0, 1, 0, 1, 1, 0],
+    }]
+  }];
+  for (const { description, cases } of groups) {
+    describe(description, () => {
+      for (const { input, expected } of cases) {
+        test(`${input} -> ${expected}`, () => expect(remove_outliers(input)).toEqual(expected));
+      }
+    });
+  }
 });
