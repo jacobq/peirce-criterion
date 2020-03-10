@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/jacobq/peirce-criterion/issues"
   },
-  "homepage": "https://github.com/jacobq/peirce-criterion#readme"
+  "homepage": "https://github.com/jacobq/peirce-criterion#readme",
+  "dependencies": {
+    "math-erfc": "^1.0.0"
+  }
 }
