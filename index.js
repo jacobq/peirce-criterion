@@ -41,3 +41,7 @@ function peirce_dev(N, k, m) {
   }
   return x2;
 }
+
+module.exports = {
+  peirce_dev,
+}
