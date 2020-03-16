@@ -1,6 +1,6 @@
 {
   "name": "peirce-criterion",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Functions for outlier removal using Peirce's criterion",
   "main": "index.js",
   "scripts": {
