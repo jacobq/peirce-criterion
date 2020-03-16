@@ -1,4 +1,4 @@
-const { peirce_dev, remove_outliers } = require('./index.js');
+const { peirce_dev, remove_outliers, separate_outliers } = require('./index.js');
 
 describe('peirce_dev', () => {
   test('it is a function', () => {
@@ -71,7 +71,53 @@ describe('remove_outliers', () => {
   for (const { description, cases } of groups) {
     describe(description, () => {
       for (const { input, expected } of cases) {
-        test(`${input} -> ${expected}`, () => expect(remove_outliers(input)).toEqual(expected));
+        test(`[${input}] -> [${expected}]`, () => expect(remove_outliers(input)).toEqual(expected));
+      }
+    });
+  }
+});
+
+describe('separate_outliers', () => {
+  const groups = [{
+    description: 'it removes "obvious" single outlier from contrived examples',
+    cases: [{
+      input: [1, 2, 3, 100],
+      expected: {
+        trimmed: [1, 2, 3],
+        outliers: [100],
+      },
+    }, {
+      input: [0, 1, 2, 0, 1, 1, 0],
+      expected: {
+        trimmed: [0, 1, 0, 1, 1, 0],
+        outliers: [2],
+      },
+    }]
+  }, {
+    description: 'it does not remove anything in the case of a split',
+    cases: [{
+      input: [
+        ...new Array(5).fill(100),
+        ...new Array(6).fill(5000),
+      ],
+      expected: {
+        trimmed: [
+          ...new Array(5).fill(100),
+          ...new Array(6).fill(5000),
+        ],
+        outliers: [],
+      },
+    }]
+  }];
+  for (const { description, cases } of groups) {
+    describe(description, () => {
+      for (const { input, expected } of cases) {
+        test(`[${input}] outliers -> [${expected.outliers}]`, () => {
+          const actual = separate_outliers(input);
+          expect(actual.trimmed).toEqual(expected.trimmed);
+          expect(actual.outliers).toEqual(expected.outliers);
+          expect(actual.original).toEqual(input);
+        });
       }
     });
   }

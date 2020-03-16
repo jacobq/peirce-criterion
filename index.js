@@ -67,6 +67,17 @@ function stats(values) {
 
 /**
  * Takes a list of numbers/samples and returns a new list with outliers removed
+ * according to Peirce's method. See separate_outliers function.
+ *
+ * @param xs Input values
+ * @returns result Input values excluding suspected outliers
+ */
+function remove_outliers(xs) {
+  return separate_outliers(xs).trimmed;
+}
+
+/**
+ * Takes a list of numbers/samples and finds suspected outliers
  * according to Peirce's method:
  *  1. Compute average & stdev (estimate mu & sigma)
  *  2. Find corresponding "R" from "Peirce's table"
@@ -78,10 +89,12 @@ function stats(values) {
  *     Otherwise we need to run 2-5 again with k = number of samples we removed this time
  *
  * @param xs Input values
- * @returns result Input values excluding suspected outliers
+ * @returns {{original: number[], outliers: number[], trimmed: number[]}}
  */
-function remove_outliers(xs) {
-  let result;
+function separate_outliers(xs) {
+  const result = {
+    original: xs,
+  };
   const { n, average, stdev } = stats(xs);
   let numberRemoved=0;
   let k;
@@ -89,10 +102,20 @@ function remove_outliers(xs) {
     k = numberRemoved + 1;
     const R = Math.sqrt(peirce_dev(n, k));
     const max = R * stdev;
-    const diffs = xs.map(x => Math.abs(x - average));
-    result = xs.filter((_x, i) => diffs[i] < max);
-    numberRemoved = xs.length - result.length;
+    //const diffs = xs.map(x => Math.abs(x - average));
+    //result = xs.filter((_x, i) => diffs[i] < max);
+    result.outliers = [];
+    result.trimmed = [];
+    for (const x of xs) {
+      if (Math.abs(x - average) < max) {
+        result.trimmed.push(x);
+      } else {
+        result.outliers.push(x);
+      }
+    }
+    numberRemoved = xs.length - result.trimmed.length;
   } while (numberRemoved > k);
+
   return result;
 }
 
@@ -100,4 +123,5 @@ function remove_outliers(xs) {
 module.exports = {
   peirce_dev,
   remove_outliers,
-}
+  separate_outliers,
+};
