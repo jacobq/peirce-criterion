@@ -92,9 +92,7 @@ function remove_outliers(xs) {
  * @returns {{original: number[], outliers: number[], trimmed: number[]}}
  */
 function separate_outliers(xs) {
-  const result = {
-    original: xs,
-  };
+  let result;
   const { n, average, stdev } = stats(xs);
   let numberRemoved=0;
   let k;
@@ -102,18 +100,21 @@ function separate_outliers(xs) {
     k = numberRemoved + 1;
     const R = Math.sqrt(peirce_dev(n, k));
     const max = R * stdev;
-    //const diffs = xs.map(x => Math.abs(x - average));
-    //result = xs.filter((_x, i) => diffs[i] < max);
-    result.outliers = [];
-    result.trimmed = [];
-    for (const x of xs) {
+    result = xs.reduce((r, x, i) => {
       if (Math.abs(x - average) < max) {
-        result.trimmed.push(x);
+        r.trimmed.push(x);
       } else {
-        result.outliers.push(x);
+        r.outliers.push(x);
+        r.outlierIndices.push(i);
       }
-    }
-    numberRemoved = xs.length - result.trimmed.length;
+      return r;
+    }, {
+      original: xs,
+      trimmed: [],
+      outliers: [],
+      outlierIndices: [],
+    });
+    numberRemoved = result.outliers.length; // also === xs.length - result.trimmed.length;
   } while (numberRemoved > k);
 
   return result;

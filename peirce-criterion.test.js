@@ -85,12 +85,14 @@ describe('separate_outliers', () => {
       expected: {
         trimmed: [1, 2, 3],
         outliers: [100],
+        outlierIndices: [3],
       },
     }, {
       input: [0, 1, 2, 0, 1, 1, 0],
       expected: {
         trimmed: [0, 1, 0, 1, 1, 0],
         outliers: [2],
+        outlierIndices: [2],
       },
     }]
   }, {
@@ -106,6 +108,7 @@ describe('separate_outliers', () => {
           ...new Array(6).fill(5000),
         ],
         outliers: [],
+        outlierIndices: [],
       },
     }]
   }];
@@ -116,6 +119,7 @@ describe('separate_outliers', () => {
           const actual = separate_outliers(input);
           expect(actual.trimmed).toEqual(expected.trimmed);
           expect(actual.outliers).toEqual(expected.outliers);
+          expect(actual.outlierIndices).toEqual(expected.outlierIndices);
           expect(actual.original).toEqual(input);
         });
       }
